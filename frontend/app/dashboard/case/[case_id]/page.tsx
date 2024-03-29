@@ -1,4 +1,4 @@
-export default async function CaseResult() {
+export default function CaseResult() {
 	return (
 		<div>CaseResult</div>
 	)

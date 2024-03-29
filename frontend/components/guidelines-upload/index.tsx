@@ -1,14 +1,27 @@
-"use client";
+"use client"
 
 import { useDashboard} from "@/context/dashboard-context";
 import classNames from "classnames";
+import React from "react";
 import { FaCheck } from "react-icons/fa";
+import Loader from "../loader";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function GuidelinesUpload() {
-    const { guidelinesFile, setGuidelinesFile } = useDashboard();
+    const { medicalRecord, guidelinesFile, setGuidelinesFile } = useDashboard();
+    const [isLoading, setIsLoading ] = React.useState(false)
 
     const handleClick = () => {
-        setGuidelinesFile({ url: "/assets/guidelines.pdf" });
+        if (!medicalRecord) {
+            toast.error("Please upload medical record first")
+        } else {
+            setIsLoading(true);
+            setTimeout(() => {
+                setGuidelinesFile({ url: "/assets/guidelines.pdf" });
+                setIsLoading(false)
+            }, 3000);
+        }
     }
 
     return(
@@ -20,14 +33,16 @@ export default function GuidelinesUpload() {
                 )}
                 onClick={handleClick}
             >
-                {guidelinesFile === null && (<span>Simulate Guidelines Upload</span>)}
-                {guidelinesFile !== null && (
+                {!isLoading && guidelinesFile === null && (<span>Simulate Guidelines Upload</span>)}
+                {isLoading && <Loader />}
+                {!isLoading && guidelinesFile !== null && (
                     <span className="text-green-600 flex flex-row gap-1 items-center">
                         <FaCheck />
                         <span>Guidelines File Uploaded</span>
                     </span>
                 )}
             </button>
+            <ToastContainer />
         </div>
     )
 }
